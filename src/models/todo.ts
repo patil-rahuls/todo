@@ -12,13 +12,17 @@ const todoSchema = new Schema<Todo>({
     required: false,
   },
   dueDate: {
-    type: Date,
+    type: String,
     required: false,
     index: true
   },
   completed: {
     type: Boolean,
     required: true,
+  },
+  userId: {
+    type: Number,
+    required: true
   }
 });
 

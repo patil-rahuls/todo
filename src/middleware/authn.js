@@ -11,12 +11,7 @@ const authnMiddleware = asyncHandler(async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // console.log(decoded);
     res.locals.userId = decoded.id;
-    // next();
-    // Only for this commit.
-    res.json({
-      success: true,
-      msg: 'Protected routed accessed with valid token.'
-    });
+    next();
   } catch(err){
     throw new Error(`Unauthorised! Token expired. Please login again.`);
   }

@@ -1,8 +1,9 @@
 interface Todo {
   title: string,
   description: string,
-  dueDate: Date,
-  completed: boolean
+  dueDate: string,
+  completed: boolean,
+  userId: number // corresponding user id
 }
 
 export { Todo };
