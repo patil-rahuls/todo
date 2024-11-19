@@ -1,11 +1,11 @@
 #Instructions to run this app locally.#
 
 [I] DB Setup - 
-  1. Install mongo DB on your machine(ignore is already installed).
-  2. Start mongo db server using command - 'mongod'
+  1. Install mongo DB on your machine(ignore if already installed).
+  2. Start the mongo db server.
   3. Create a database named - 'todo'
-    > use todo // 'use' command will create the db if it doesn't exists.
-  4. Create a user with some strong password on it.
+    > use todo // will create the db if it doesn't exists.
+  4. Create a user with a strong password on it.
     > db.createUser(
         {
           user: "xxxxxxxxx",
@@ -18,14 +18,20 @@
   1. clone this repo and run 
      'npm i'
   2. Create an ".env" file with the following parameters with your secrets.
-      PORT=XXXX
-      ENV=(server env - PROD OR DEV)
+      PORT=XXXX #Replace XXXX with the port that you want your server to listen to.
+      ENV=(server environment - PROD OR DEV)
       JWT_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       DB_URL=mongodb://<db_user>:<db_password>@<url>:<port>/todo
+      #Replace <db_user> and <db_password> with the user and the password that was created in Step 4 of DB Setup. If you already have created a user, then you can use that too.
+
+      Note on ENV - 
+      By setting ENV=DEV, we will get stack-trace in the response when an error occurs. This could be useful for debugging purpose.
+      For Prod environment, ENV=PROD should be used.
+
   3. To start the app, run
      'npm run start'
 
-#APIs#
+#API Reference#
   1. User
      1.1 SignUp/Create user - 
       Method - POST Req. URL - `localhost:<PORT>/api/user/signup`
