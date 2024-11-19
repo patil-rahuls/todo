@@ -21,7 +21,7 @@ const userValidationMiddleware = asyncHandler(async (req, res, next) => {
       throw new Error(`Incorrect Email`);
     // 4. Min 6, Max 20 alphanumeric characters validatoin for psswrd
     case password.length < 6 || password.length > 20 || !validation.isAlphanumeric(password):
-      throw new Error(`Password should be between 6 to 20 alpha-numeric characters long.`);
+      throw new Error(`Please re-check Password. It should be between 6 to 20 alpha-numeric characters long.`);
   }
   next();
 });
@@ -37,7 +37,7 @@ const todoValidationMiddleware = asyncHandler(async (req, res, next) => {
     case Boolean(![title, description, dueDate].every(ip => typeof ip === 'string')):
       throw new Error(`Title, Description and dueDate all should be string`);
     // 3. Alphanumeric validation for title and description using 'validator' library
-    case Boolean(!validation.isAlphanumeric(title) || !validation.isAlphanumeric(description)):
+    case Boolean(!validation.isAlphanumeric(validation.blacklist(title, ' ')) || !validation.isAlphanumeric(validation.blacklist(description, ' ,.'))):
       throw new Error(`Only alphanumeric characters allowed for Title and Description`);
     // 4. Check if dueDate string is a date 
     case !validation.isDate(dueDate, { format: "MM/DD/YYYY" }):
@@ -57,10 +57,34 @@ const todoIdValidationMiddleware = asyncHandler(async (req, res, next) => {
     case Boolean(!id):
       throw new Error(`Missing query parameter`);
     // 2. Check if the todo id is a integer and not decimal or any other type.
-    case Boolean(Number(id) % 1 !== 0 || id.includes('.')):
-      throw new Error(`Query parameter should be an integer`);
+    case Boolean(!validation.isAlphanumeric(id)):
+      throw new Error(`Query parameter should be alphanumeric (ObjectId i.e. '_id')`);
   }
   next();
 }); 
 
-export { userValidationMiddleware, todoValidationMiddleware, todoIdValidationMiddleware };
+// Assuming that user can send only required data to update a todo item.
+const todoUpdateValidationMiddleware = asyncHandler(async (req, res, next) => {
+  // check if properties are present on the req.body
+  if(req.body.hasOwnProperty('title') && (
+    typeof req.body.title !== 'string' || 
+    !validation.isAlphanumeric(validation.blacklist(req.body.title, ' ')))
+    ){
+    throw new Error(`Title should be an alphanumeric string`);
+  } else if(req.body.hasOwnProperty('description') && (
+    typeof req.body.description !== 'string' || 
+    !validation.isAlphanumeric(validation.blacklist(req.body.description, ' ,.')))
+    ){
+    throw new Error(`Description should be an alphanumeric string`);
+  } else if(req.body.hasOwnProperty('dueDate') && 
+    !validation.isDate(req.body.dueDate, { format: "MM/DD/YYYY" })
+    ){
+    throw new Error(`dueDate should be a date string in format 'MM/DD/YYYY'`);
+  } else if(req.body.hasOwnProperty('completed') && 
+    typeof req.body.completed !== 'boolean'){
+    throw new Error(`Field - 'completed' should be a boolean`);
+  }
+  next();
+});
+
+export { userValidationMiddleware, todoValidationMiddleware, todoIdValidationMiddleware, todoUpdateValidationMiddleware };

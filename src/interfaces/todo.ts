@@ -3,7 +3,7 @@ interface Todo {
   description: string,
   dueDate: string,
   completed: boolean,
-  userId: number // corresponding user id
+  userId: string // corresponding user id
 }
 
 export { Todo };

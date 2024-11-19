@@ -2,7 +2,7 @@ import '../config/dotenv.js';
 
 // for unidentified routes access by client
 const notFound = (req, res, next) => {
-  const error = new Error(`Requested resource not found. Please check ReadMe for APIs.`);
+  const error = new Error(`Requested resource/method not found. Please check ReadMe for APIs.`);
   res.status(404);
   next(error);
 };
